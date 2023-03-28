@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
@@ -10,7 +11,16 @@ public class GridSystemController : MonoBehaviour {
     private int Height;
 
     [SerializeField]
+    private GameObject EdgeWallObject;
+
+    [SerializeField]
+    private GameObject WallHolder;
+
+    [SerializeField]
     private GameObject[] Cells;
+
+    // Walls
+    private List<GameObject> EdgeWallPieces = new();
 
     private void Awake() {
         UpdateGridScale();
@@ -39,20 +49,20 @@ public class GridSystemController : MonoBehaviour {
     }
 
     private void UpdateGridScale() {
-        Vector3 fixedScale = new();
         int oldWidth = Width, oldHeight = Height;
-
         Width = Mathf.RoundToInt(transform.localScale.x);
         Height = Mathf.RoundToInt(transform.localScale.z);
 
-        fixedScale.x = Width;
-        fixedScale.y = GridConfig.DEFAULT_Y_SYSTEM_SCALE;
-        fixedScale.z = Height;
+        transform.localScale = new() {
+            x = Width,
+            y = GridConfig.DEFAULT_Y_SYSTEM_SCALE,
+            z = Height
+        };
 
-        transform.localScale = fixedScale;
-
-        if ((oldWidth != Width) || (oldHeight != Height))
+        if ((oldWidth != Width) || (oldHeight != Height)) {
+            GenerateWalls();
             UpdateCellsPosition();
+        }
     }
 
     private void CheckCellSwap() {
@@ -76,5 +86,107 @@ public class GridSystemController : MonoBehaviour {
 
     private void SwapCells(int index1, int index2) {
         (Cells[index2], Cells[index1]) = (Cells[index1], Cells[index2]);
+    }
+
+    private void GenerateWalls() {
+        ClearWallPieces();
+
+        // Calculate offsets
+        Vector3 offsetX = new() {
+            x = GridConfig.DEFAULT_X_WALL_OFFSET + GridConfig.CELL_TO_GRID_SCALE/2 + GridConfig.DEFAULT_X_WALL_SCALE / 2,
+            y = 0,
+            z = 0
+        };
+
+        Vector3 offsetY = new() {
+            x = 0,
+            y = GridConfig.DEFAULT_Y_WALL_OFFSET,
+            z = 0
+        };
+
+        Vector3 offsetZ = new() {
+            x = 0,
+            y = 0,
+            z = GridConfig.DEFAULT_Z_WALL_OFFSET + GridConfig.CELL_TO_GRID_SCALE/2 + GridConfig.DEFAULT_Z_WALL_SCALE / 2
+        };
+
+        Vector3 offsetCorner = new() {
+            x = GridConfig.DEFAULT_X_WALL_SCALE / 2 + GridConfig.DEFAULT_X_WALL_SCALE * GridConfig.NUMBER_OF_WALLS_PIECE_EACH_CELL / 2 ,
+            y = 0,
+            z = 0,
+        };
+
+        // Generate walls at the top side of GridSystem
+        for (int i = 0; i < Width; i++) {
+            Vector3 cellPos = CalculateCellPosition(i);
+            if (i == 0) {
+                GenerateWallGroup(cellPos + offsetZ + offsetY, GridConfig.WallGroupDirection.HORIZONTAL);
+                GenerateWallPiece(cellPos + offsetZ + offsetY - offsetCorner);
+            } else if (i == Width - 1) {
+                GenerateWallGroup(cellPos + offsetZ + offsetY, GridConfig.WallGroupDirection.HORIZONTAL);
+                GenerateWallPiece(cellPos + offsetZ + offsetY + offsetCorner);
+            } else
+                GenerateWallGroup(cellPos + offsetZ + offsetY, GridConfig.WallGroupDirection.HORIZONTAL);
+        }
+
+        // Generate walls at the bottom side of GridSystem
+        for (int i = 0; i < Width; i++) {
+            Vector3 cellPos = CalculateCellPosition(Width * (Height - 1) + i);
+            if (i == 0) {
+                GenerateWallGroup(cellPos - offsetZ + offsetY, GridConfig.WallGroupDirection.HORIZONTAL);
+                GenerateWallPiece(cellPos - offsetZ + offsetY - offsetCorner);
+            } else if (i == Width - 1) {
+                GenerateWallGroup(cellPos - offsetZ + offsetY, GridConfig.WallGroupDirection.HORIZONTAL);
+                GenerateWallPiece(cellPos - offsetZ + offsetY + offsetCorner);
+            } else
+                GenerateWallGroup(cellPos - offsetZ + offsetY, GridConfig.WallGroupDirection.HORIZONTAL);
+        }
+
+        // Generate walls at the left and right side of GridSystem
+        for (int i = 0; i < Height; i++) {
+            int l = Width * i, r = Width * (i + 1) - 1;
+            GenerateWallGroup(CalculateCellPosition(l) - offsetX + offsetY, GridConfig.WallGroupDirection.VERTICAL);
+            GenerateWallGroup(CalculateCellPosition(r) + offsetX + offsetY, GridConfig.WallGroupDirection.VERTICAL);
+        }
+    }
+
+    private void GenerateWallGroup(Vector3 centerPos, GridConfig.WallGroupDirection direction) {
+        switch (direction) {
+            case GridConfig.WallGroupDirection.HORIZONTAL:
+                for (int i = 1; i <= GridConfig.NUMBER_OF_WALLS_PIECE_EACH_CELL; i++) {
+                    GenerateWallPiece(new() {
+                        x = centerPos.x - GridConfig.NUMBER_OF_WALLS_PIECE_EACH_CELL * GridConfig.DEFAULT_X_WALL_SCALE / 2 + i * GridConfig.DEFAULT_X_WALL_SCALE - GridConfig.DEFAULT_X_WALL_SCALE / 2,
+                        y = centerPos.y,
+                        z = centerPos.z,
+                    });
+                }
+                break;
+
+            case GridConfig.WallGroupDirection.VERTICAL:
+                for (int i = 1; i <= GridConfig.NUMBER_OF_WALLS_PIECE_EACH_CELL; i++) {
+                    GenerateWallPiece(new() {
+                        x = centerPos.x,
+                        y = centerPos.y,
+                        z = centerPos.z - GridConfig.NUMBER_OF_WALLS_PIECE_EACH_CELL * GridConfig.DEFAULT_Z_WALL_SCALE / 2 + i * GridConfig.DEFAULT_Z_WALL_SCALE - GridConfig.DEFAULT_Z_WALL_SCALE / 2,
+                    });
+                }
+                break;
+        }
+    }
+
+    private void GenerateWallPiece(Vector3 localPos) {
+        GameObject newWallPiece = Instantiate(EdgeWallObject);
+        newWallPiece.transform.localPosition = localPos;
+        newWallPiece.transform.parent = WallHolder.transform;
+
+        EdgeWallPieces.Add(newWallPiece);
+    }
+
+    private void ClearWallPieces() {
+        EdgeWallPieces.ForEach(delegate (GameObject piece) {
+            DestroyImmediate(piece);
+        });
+
+        EdgeWallPieces.Clear();
     }
 }
