@@ -12,6 +12,9 @@ public class GameplayConfig {
     public const string NAME_PLATFORM = "Platform";
 
     public enum MoveDirection {
-        TOP, BOTTOM, LEFT, RIGHT
+        TOP,
+        BOTTOM,
+        LEFT,
+        RIGHT
     }
 }

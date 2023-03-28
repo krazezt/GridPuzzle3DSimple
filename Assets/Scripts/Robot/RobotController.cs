@@ -18,7 +18,6 @@ public class RobotController : MonoBehaviour {
     // States
     private bool isPlaying = false;
 
-    private GameplayConfig.MoveDirection PrevMoveDirection;
     private GameplayConfig.MoveDirection CurrentMoveDirection;
     private Vector3 CurrentRotation;
 
@@ -28,6 +27,7 @@ public class RobotController : MonoBehaviour {
     private float platformRotateOffset = 0f;
     private float platformYOffset = 0f;
     private float platformYAxisRotateDeltaDegree = 0f;
+    private Vector3 platformPosisionSnap;
     private bool onRotating;
 
     // Variables
@@ -46,7 +46,6 @@ public class RobotController : MonoBehaviour {
         CurrentRotation = transform.eulerAngles;
         CurrentDir = DIR_RIGHT;
         CurrentMoveDirection = GameplayConfig.MoveDirection.RIGHT;
-        PrevMoveDirection = CurrentMoveDirection;
         onRotating = false;
 
         gameObject.transform.eulerAngles = CurrentRotation;
@@ -126,7 +125,7 @@ public class RobotController : MonoBehaviour {
                             if (!onRotating) {
                                 // Start rotate
                                 RobotAnimator.SetBool(AnimationConfig.WALKING_ANIMATION_STATE, false);
-                                PrevMoveDirection = CurrentMoveDirection;
+                                transform.position = collision.gameObject.transform.position + new Vector3(0, platformYOffset, 0);
 
                                 platformYAxisRotateDeltaDegree = 0f;
                                 platformRotateOffset = collision.gameObject.transform.eulerAngles.y - transform.eulerAngles.y;
