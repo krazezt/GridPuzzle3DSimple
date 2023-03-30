@@ -26,7 +26,7 @@ public class GridSystemController : MonoBehaviour {
         UpdateGridScale();
         UpdateCellsPosition();
 
-        CellDragAndDrop.CellDragEvent += CheckCellSwap;
+        CellController.CellDragEvent += CheckCellSwap;
     }
 
     private void LateUpdate() {
@@ -67,12 +67,12 @@ public class GridSystemController : MonoBehaviour {
 
     private void CheckCellSwap() {
         for (int i = 0; i < Cells.Length; i++) {
-            if (Cells[i].GetComponent<CellDragAndDrop>().onDragging)
+            if (Cells[i].GetComponent<CellController>().onDragging)
                 for (int j = 0; j < Cells.Length; j++)
                     if (
                         (i != j) &&
-                        (!Cells[i].GetComponent<CellDragAndDrop>().isLocked) &&
-                        (!Cells[j].GetComponent<CellDragAndDrop>().isLocked) &&
+                        (!Cells[i].GetComponent<CellController>().isLocked) &&
+                        (!Cells[j].GetComponent<CellController>().isLocked) &&
                         (Vector3.Distance(Cells[i].transform.position, Cells[j].transform.position) <= GridConfig.CELL_SNAP_DISTANCE)
                         ) {
                         SwapCells(i, j);

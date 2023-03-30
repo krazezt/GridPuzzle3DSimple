@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class RobotController : MonoBehaviour {
     private Animator RobotAnimator;
@@ -27,19 +28,37 @@ public class RobotController : MonoBehaviour {
     private float platformRotateOffset = 0f;
     private float platformYOffset = 0f;
     private float platformYAxisRotateDeltaDegree = 0f;
-    private Vector3 platformPosisionSnap;
+
+    private bool onStarting;
     private bool onRotating;
+    private bool onRolling;
+    private bool onStartRolling;
+    private bool onStopRolling;
 
     // Variables
+    public GameObject RobotBody;
+
     public CharacterController controller;
 
-    [SerializeField]
-    private float RotateSpeed = 40f;
+    public TimeManager timeManager;
+
+    public ParticleSystem ExplosionVFX;
+    public ParticleSystem ElectrifiedVFX;
 
     [SerializeField]
     private float MovementSpeed = 0.02f;
 
+    [SerializeField]
+    private float MSMultiplyOnRolling = 5f;
+
+    [SerializeField]
+    private float MSMultiplyOnStartRolling = 0.5f;
+
+    [SerializeField]
+    private float MSMultiplyOnStopRolling = 0.0f;
+
     private Vector3 CurrentDir;
+    private Vector3 tmpMoveVector;
 
     private void Awake() {
         RobotAnimator = gameObject.GetComponent<Animator>();
@@ -47,42 +66,102 @@ public class RobotController : MonoBehaviour {
         CurrentDir = DIR_RIGHT;
         CurrentMoveDirection = GameplayConfig.MoveDirection.RIGHT;
         onRotating = false;
+        onRolling = false;
+        onStartRolling = false;
+        onStopRolling = false;
+
+        onStarting = true;
+        isPlaying = false;
 
         gameObject.transform.eulerAngles = CurrentRotation;
     }
 
     // Update is called once per frame
     private void Update() {
-        // Preprocess
-        CheckKey();
+        //Preprocess
         wallCollideDeltaTime += Time.deltaTime;
         platformRotateDeltaTime += Time.deltaTime;
 
         // Process
         transform.eulerAngles = CurrentRotation;
-
         switch (isPlaying) {
             case true:  // Game is on Playing
                 if (!onRotating)
                     MoveForward();
+
                 break;
 
             case false: // Game is on Starting or Ending
-                if (!RobotAnimator.GetCurrentAnimatorStateInfo(0).IsName(AnimationConfig.ANIMATION_NAME_OPENING)) {
+                if (onStarting && !RobotAnimator.GetCurrentAnimatorStateInfo(0).IsName(AnimationConfig.ANIMATION_NAME_OPENING)) {
                     RobotAnimator.SetBool(AnimationConfig.WALKING_ANIMATION_STATE, true);
 
+                    onStarting = false;
                     isPlaying = true;
                 }
+
                 break;
         }
     }
 
     private void MoveForward() {
-        controller.Move(CurrentDir * MovementSpeed);
+        tmpMoveVector = Vector3.zero;
+
+        tmpMoveVector = CurrentDir * MovementSpeed;
+
+        if (onRolling)
+            tmpMoveVector *= MSMultiplyOnRolling;
+        if (onStartRolling)
+            tmpMoveVector *= MSMultiplyOnStartRolling;
+        if (onStopRolling)
+            tmpMoveVector *= MSMultiplyOnStopRolling;
+
+        controller.Move(tmpMoveVector * Time.timeScale);
     }
 
     private void OnTriggerEnter(Collider other) {
         // Debug.Log("Trigger detected: " + other.tag);
+
+        switch (other.gameObject.tag) {
+            case GameplayConfig.TAG_GAMECONTROLLER:
+                // Debug.Log("GameController: " + collision.gameObject.name);
+                switch (other.gameObject.name) {
+                    case GameplayConfig.NAME_FIRE_AREA:
+                        StartCoroutine(StartDyingFire());
+                        break;
+
+                    case GameplayConfig.NAME_GOAL_POINT:
+                        StartCoroutine(Win());
+                        break;
+
+                    default:
+                        break;
+                };
+                break;
+
+            case GameplayConfig.TAG_CELL:
+                CellController cellController;
+                if (other.TryGetComponent(out cellController))
+                    cellController.LockCellTmp();
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void OnTriggerExit(Collider other) {
+        // Debug.Log("Trigger exited: " + other.tag);
+
+        switch (other.gameObject.tag) {
+            case GameplayConfig.TAG_CELL:
+                CellController cellController;
+                if (other.TryGetComponent(out cellController))
+                    cellController.UnlockCellTmp();
+                break;
+
+            default:
+                break;
+        }
     }
 
     private void OnCollisionEnter(Collision collision) {
@@ -98,9 +177,24 @@ public class RobotController : MonoBehaviour {
                 break;
 
             case GameplayConfig.TAG_GAMECONTROLLER:
+                // Debug.Log("GameController: " + collision.gameObject.name);
                 switch (collision.gameObject.name) {
                     case GameplayConfig.NAME_PLATFORM:
                         platformYOffset = Mathf.Abs(collision.gameObject.transform.position.y - transform.position.y);
+                        break;
+
+                    case GameplayConfig.NAME_ACCELERATE_UP:
+                        if (!onRolling)
+                            StartCoroutine(StartRolling());
+                        break;
+
+                    case GameplayConfig.NAME_ACCELERATE_DOWN:
+                        if (onRolling)
+                            StartCoroutine(StopRolling());
+                        break;
+
+                    case GameplayConfig.NAME_ELECTRIC_ARC:
+                        StartCoroutine(StartDyingElectric());
                         break;
 
                     default:
@@ -118,16 +212,19 @@ public class RobotController : MonoBehaviour {
             case GameplayConfig.TAG_GAMECONTROLLER:
                 switch (collision.gameObject.name) {
                     case GameplayConfig.NAME_PLATFORM:
+                        // Debug.Log("onRotating: " + onRotating + ", Position: " +
+                        // transform.position + ", Distance: " +
+                        // (Vector3.Distance(transform.position,
+                        // collision.gameObject.transform.position) - platformYOffset));
+
                         if (Vector3.Distance(transform.position, collision.gameObject.transform.position) - platformYOffset <= GameplayConfig.PLATFORM_SNAP_DISTANCE &&
-                            platformRotateDeltaTime >= GameplayConfig.PLATFORM_ROTATE_DELAY
+                            ((platformRotateDeltaTime >= GameplayConfig.PLATFORM_ROTATE_DELAY && !onRolling) || (platformRotateDeltaTime >= GameplayConfig.PLATFORM_ROTATE_DELAY_ON_ROLLING && onRolling))
                             ) {
-                            // Calculate offset
                             if (!onRotating) {
                                 // Start rotate
                                 RobotAnimator.SetBool(AnimationConfig.WALKING_ANIMATION_STATE, false);
                                 transform.position = collision.gameObject.transform.position + new Vector3(0, platformYOffset, 0);
 
-                                platformYAxisRotateDeltaDegree = 0f;
                                 platformRotateOffset = collision.gameObject.transform.eulerAngles.y - transform.eulerAngles.y;
                                 onRotating = true;
                             } else {
@@ -135,13 +232,14 @@ public class RobotController : MonoBehaviour {
                                 platformYAxisRotateDeltaDegree += Mathf.Abs(CurrentRotation.y - (collision.gameObject.transform.eulerAngles.y - platformRotateOffset));
 
                                 // Euler angles changed from 180 to -180 or vice versa.
-                                if (platformYAxisRotateDeltaDegree > 360f)
+                                if (platformYAxisRotateDeltaDegree > 360f - GameplayConfig.PLATFORM_SNAP_ROTATE)
                                     platformYAxisRotateDeltaDegree -= 360f;
 
                                 CurrentRotation.y = collision.gameObject.transform.eulerAngles.y - platformRotateOffset;
 
                                 // Stop rotate
                                 if (platformYAxisRotateDeltaDegree >= GameplayConfig.PLATFORM_ROTATE_MAX) {
+                                    // Debug.Log("platformYAxisRotateDeltaDegree = " + platformYAxisRotateDeltaDegree);
                                     platformYAxisRotateDeltaDegree = 0f;
                                     platformRotateDeltaTime = 0f;
                                     SnapRotation();
@@ -231,40 +329,79 @@ public class RobotController : MonoBehaviour {
         wallCollideDeltaTime = 0f;
     }
 
-    private void CheckKey() {
-        // Walk
-        if (Input.GetKey(KeyCode.W)) {
-            RobotAnimator.SetBool(AnimationConfig.WALKING_ANIMATION_STATE, true);
-        } else if (Input.GetKeyUp(KeyCode.W)) {
-            RobotAnimator.SetBool(AnimationConfig.WALKING_ANIMATION_STATE, false);
-        }
+    private IEnumerator StartRolling() {
+        RobotAnimator.SetBool(AnimationConfig.ROLLING_ANIMATION_STATE, true);
+        onStartRolling = true;
 
-        // Rotate Left
-        if (Input.GetKey(KeyCode.A)) {
-            CurrentRotation[1] -= RotateSpeed * Time.fixedDeltaTime;
-        }
+        yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_START_ROLL);
 
-        // Rotate Right
-        if (Input.GetKey(KeyCode.D)) {
-            CurrentRotation[1] += RotateSpeed * Time.fixedDeltaTime;
-        }
+        onStartRolling = false;
+        onRolling = true;
+    }
 
-        // Roll
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            if (RobotAnimator.GetBool(AnimationConfig.ROLLING_ANIMATION_STATE)) {
-                RobotAnimator.SetBool(AnimationConfig.ROLLING_ANIMATION_STATE, false);
-            } else {
-                RobotAnimator.SetBool(AnimationConfig.ROLLING_ANIMATION_STATE, true);
-            }
-        }
+    private IEnumerator StopRolling() {
+        RobotAnimator.SetBool(AnimationConfig.ROLLING_ANIMATION_STATE, false);
+        onRolling = false;
 
-        // Close
-        if (Input.GetKeyDown(KeyCode.LeftControl)) {
-            if (!RobotAnimator.GetBool(AnimationConfig.OPENING_ANIMATION_STATE)) {
-                RobotAnimator.SetBool(AnimationConfig.OPENING_ANIMATION_STATE, true);
-            } else {
-                RobotAnimator.SetBool(AnimationConfig.OPENING_ANIMATION_STATE, false);
-            }
+        yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_STOP_ROLL);
+
+        onStopRolling = true;
+
+        yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_START_WALK_AFTER_ROLL);
+
+        onStopRolling = false;
+    }
+
+    private IEnumerator StartDyingFire() {
+        if (!onRolling) {
+            RobotAnimator.SetBool(AnimationConfig.OPENING_ANIMATION_STATE, false);
+            yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_CLOSE);
+        } else
+            yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_EXPLODE_FIRE);
+
+        isPlaying = false;
+        RobotBody.SetActive(false);
+        ExplosionVFX.Play();
+        if (Camera.main.TryGetComponent<CameraShake>(out var cameraShake))
+            cameraShake.StartShake();
+
+        StartCoroutine(Lose());
+    }
+
+    private IEnumerator StartDyingElectric() {
+        isPlaying = false;
+        RobotAnimator.speed = 0f;
+
+        yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_ELECTRIFIED);
+        ElectrifiedVFX.Play();
+
+        yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_EXPLODE_ELECCTRIC);
+        ElectrifiedVFX.Stop();
+
+        RobotBody.SetActive(false);
+        ExplosionVFX.Play();
+        if (Camera.main.TryGetComponent<CameraShake>(out var cameraShake))
+            cameraShake.StartShake();
+
+        StartCoroutine(Lose());
+    }
+
+    private IEnumerator Win() {
+        isPlaying = false;
+        if (onRolling) {
+            RobotAnimator.SetBool(AnimationConfig.ROLLING_ANIMATION_STATE, false);
+            yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_STOP_ROLL);
         }
+        RobotAnimator.SetBool(AnimationConfig.WINNING_ANIMATION_STATE, true);
+
+        yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_WINNING);
+        Debug.Log("Win");
+    }
+
+    private IEnumerator Lose() {
+        isPlaying = false;
+
+        yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_WINNING);
+        Debug.Log("Lose");
     }
 }

@@ -42,6 +42,7 @@ Material:
     - _FlickerSpeed: 3
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _UnscaledTime: 17.775475
     m_Colors: []
   m_BuildTextureStacks: []
 --- !u!114 &322688957420428367
