@@ -1,6 +1,8 @@
 using UnityEngine;
 
 public class TimeManager : MonoBehaviour {
+    public static TimeManager instance;
+
     private float normalFactor = 1.0f;
     private float stopFactor = 0.0f;
     public float slowdownFactor = 0.05f;
@@ -8,6 +10,15 @@ public class TimeManager : MonoBehaviour {
     public float fixedUpdateRate = 50f;
 
     public Material[] UsingUnscaledTimeMaterials;
+
+    private void Awake() {
+        if (instance == null)
+            instance = this;
+        else {
+            Destroy(this);
+            return;
+        }
+    }
 
     public void StartSlowmotion() {
         Time.timeScale = slowdownFactor;

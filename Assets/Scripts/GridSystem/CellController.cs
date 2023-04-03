@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 [ExecuteInEditMode]
 public class CellController : MonoBehaviour {
@@ -54,7 +55,7 @@ public class CellController : MonoBehaviour {
     }
 
     private void OnMouseDown() {
-        if (isLocked || tmpLocked || !Application.isPlaying)
+        if (isLocked || tmpLocked || !Application.isPlaying || IsMouseOverUI())
             return;
 
         timeManager.StopTime();
@@ -64,7 +65,7 @@ public class CellController : MonoBehaviour {
     }
 
     private void OnMouseDrag() {
-        if (isLocked || tmpLocked || !Application.isPlaying)
+        if (isLocked || tmpLocked || !Application.isPlaying || IsMouseOverUI())
             return;
 
         Vector3 fixedPosition = MouseWorldPositionDrag() + offsetVector;
@@ -75,13 +76,17 @@ public class CellController : MonoBehaviour {
     }
 
     private void OnMouseUp() {
-        if (isLocked || tmpLocked || !Application.isPlaying)
+        if (isLocked || tmpLocked || !Application.isPlaying || IsMouseOverUI())
             return;
 
         timeManager.UnstopTime();
         HideRuler();
         CellDragEvent();
         onDragging = false;
+    }
+
+    private bool IsMouseOverUI() {
+        return EventSystem.current.IsPointerOverGameObject();
     }
 
     private Vector3 MouseWorldPositionStart() {
