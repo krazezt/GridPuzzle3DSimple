@@ -40,7 +40,8 @@ public class RobotController : MonoBehaviour {
 
     public CharacterController controller;
 
-    public TimeManager timeManager;
+    [HideInInspector]
+    public GameplayConfig.PlayState playState;
 
     public ParticleSystem ExplosionVFX;
     public ParticleSystem ElectrifiedVFX;
@@ -59,16 +60,19 @@ public class RobotController : MonoBehaviour {
 
     private Vector3 CurrentDir;
     private Vector3 tmpMoveVector;
+    private bool isStarCollected;
 
     private void Awake() {
         RobotAnimator = gameObject.GetComponent<Animator>();
         CurrentRotation = transform.eulerAngles;
         CurrentDir = DIR_RIGHT;
         CurrentMoveDirection = GameplayConfig.MoveDirection.RIGHT;
+        playState = GameplayConfig.PlayState.PLAYING;
         onRotating = false;
         onRolling = false;
         onStartRolling = false;
         onStopRolling = false;
+        isStarCollected = false;
 
         onStarting = true;
         isPlaying = false;
@@ -129,8 +133,15 @@ public class RobotController : MonoBehaviour {
                         StartCoroutine(StartDyingFire());
                         break;
 
+                    case GameplayConfig.NAME_STAR:
+                        FindObjectOfType<AudioManager>().PlaySFX(AudioConfig.SFX_STAR_COLLECTED);
+                        StartCoroutine(other.gameObject.GetComponent<Star>().Collect());
+                        isStarCollected = true;
+                        break;
+
                     case GameplayConfig.NAME_GOAL_POINT:
-                        StartCoroutine(Win());
+                        if (isStarCollected)
+                            StartCoroutine(Win());
                         break;
 
                     default:
@@ -330,6 +341,7 @@ public class RobotController : MonoBehaviour {
     }
 
     private IEnumerator StartRolling() {
+        FindObjectOfType<AudioManager>().PlaySFX(AudioConfig.SFX_ACCELERATE_UP);
         RobotAnimator.SetBool(AnimationConfig.ROLLING_ANIMATION_STATE, true);
         onStartRolling = true;
 
@@ -340,6 +352,7 @@ public class RobotController : MonoBehaviour {
     }
 
     private IEnumerator StopRolling() {
+        FindObjectOfType<AudioManager>().PlaySFX(AudioConfig.SFX_ACCELERATE_DOWN);
         RobotAnimator.SetBool(AnimationConfig.ROLLING_ANIMATION_STATE, false);
         onRolling = false;
 
@@ -361,6 +374,7 @@ public class RobotController : MonoBehaviour {
 
         isPlaying = false;
         RobotBody.SetActive(false);
+        FindObjectOfType<AudioManager>().PlaySFX(AudioConfig.SFX_EXPLOSION);
         ExplosionVFX.Play();
         if (Camera.main.TryGetComponent<CameraShake>(out var cameraShake))
             cameraShake.StartShake();
@@ -373,12 +387,14 @@ public class RobotController : MonoBehaviour {
         RobotAnimator.speed = 0f;
 
         yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_ELECTRIFIED);
+        FindObjectOfType<AudioManager>().PlaySFX(AudioConfig.SFX_ELECTRIFIED);
         ElectrifiedVFX.Play();
 
         yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_EXPLODE_ELECCTRIC);
         ElectrifiedVFX.Stop();
 
         RobotBody.SetActive(false);
+        FindObjectOfType<AudioManager>().PlaySFX(AudioConfig.SFX_EXPLOSION);
         ExplosionVFX.Play();
         if (Camera.main.TryGetComponent<CameraShake>(out var cameraShake))
             cameraShake.StartShake();
@@ -395,13 +411,15 @@ public class RobotController : MonoBehaviour {
         RobotAnimator.SetBool(AnimationConfig.WINNING_ANIMATION_STATE, true);
 
         yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_WINNING);
-        Debug.Log("Win");
+        playState = GameplayConfig.PlayState.WINNING;
+        FindObjectOfType<AudioManager>().PlaySFX(AudioConfig.SFX_WIN);
     }
 
     private IEnumerator Lose() {
         isPlaying = false;
 
         yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_WINNING);
-        Debug.Log("Lose");
+        playState = GameplayConfig.PlayState.LOSING;
+        FindObjectOfType<AudioManager>().PlaySFX(AudioConfig.SFX_LOSE);
     }
 }

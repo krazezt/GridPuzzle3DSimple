@@ -55,9 +55,13 @@ public class CellController : MonoBehaviour {
     }
 
     private void OnMouseDown() {
-        if (isLocked || tmpLocked || !Application.isPlaying || IsMouseOverUI())
+        if (isLocked || tmpLocked || !Application.isPlaying || IsMouseOverUI()) {
+            if (!IsMouseOverUI())
+                FindObjectOfType<AudioManager>().PlaySFX(AudioConfig.SFX_CELL_LOCKED);
             return;
+        }
 
+        FindObjectOfType<AudioManager>().PlaySFX(AudioConfig.SFX_CELL_DRAG);
         timeManager.StopTime();
         ShowRuler();
         offsetVector = transform.position - MouseWorldPositionStart();
@@ -79,6 +83,7 @@ public class CellController : MonoBehaviour {
         if (isLocked || tmpLocked || !Application.isPlaying || IsMouseOverUI())
             return;
 
+        FindObjectOfType<AudioManager>().PlaySFX(AudioConfig.SFX_CELL_DRAG);
         timeManager.UnstopTime();
         HideRuler();
         CellDragEvent();

@@ -17,6 +17,8 @@ public class GridConfig {
 
     public const int NUMBER_OF_WALLS_PIECE_EACH_CELL = 4;
 
+    public const string CEllS_NAME_POSFIX = "Cell_";
+
     public enum WallGroupDirection {
         VERTICAL,
         HORIZONTAL

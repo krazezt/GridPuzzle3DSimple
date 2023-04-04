@@ -1,7 +1,6 @@
 using UnityEngine;
 
 public class KeyManager : MonoBehaviour {
-    public TimeManager timeManager;
     public GameObject UIController;
 
     private void Update() {

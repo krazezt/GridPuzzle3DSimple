@@ -44,6 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 015e38941755ecd4db2f55150e7aee99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeManager: {fileID: 5389687342665428818, guid: 7dc8d354fbb15b447b36bcd4f9bdb381,
-    type: 3}
-  overlayMenu: {fileID: 0}
+  UIController: {fileID: 0}

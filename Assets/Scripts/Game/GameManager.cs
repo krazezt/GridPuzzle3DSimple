@@ -29,32 +29,39 @@ public class GameManager : MonoBehaviour {
 
     public void NavigateScene(string name) {
         sceneStack.Push(name);
-        StartCoroutine(LoadSceneAsynchronously(name));
+        StartCoroutine(LoadSceneAsynchronously(name, LoadSceneMode.Single));
+    }
+
+    public void ReloadScene() {
+        StartCoroutine(LoadSceneAsynchronously(SceneManager.GetActiveScene().name, LoadSceneMode.Single));
     }
 
     public void BackScene() {
         sceneStack.Pop();
-        StartCoroutine(LoadSceneAsynchronously(sceneStack.Peek()));
+        StartCoroutine(LoadSceneAsynchronously(sceneStack.Peek(), LoadSceneMode.Single));
     }
 
-    private IEnumerator LoadSceneAsynchronously(string name) {
+    private IEnumerator LoadSceneAsynchronously(string name, LoadSceneMode mode) {
         loadProgress = 0f;
         sceneFadeAlpha = 0f;
+        float originalBGMVolume = FindObjectOfType<AudioManager>().BGMVolume;
         float deltaTime = 0f;
 
         while (deltaTime <= GameConfig.SCENE_FADE_DURATION) {
             sceneFadeAlpha = Mathf.Clamp01(deltaTime / GameConfig.SCENE_FADE_DURATION);
+            FindObjectOfType<AudioManager>().SetBGMVolume(originalBGMVolume * (1 - sceneFadeAlpha));
 
             deltaTime += Time.unscaledDeltaTime;
             yield return null;
         }
 
-        SceneManager.LoadScene(GameConfig.SCENE_NAME_LOADING);
-        AsyncOperation operation = SceneManager.LoadSceneAsync(name);
+        AsyncOperation loadingSceneOperation = SceneManager.LoadSceneAsync(GameConfig.SCENE_NAME_LOADING);
+        while (loadingSceneOperation.isDone)
+            yield return null;
 
-        while (!operation.isDone) {
-            loadProgress = Mathf.Clamp01(operation.progress / 0.9f);
-            Debug.Log(loadProgress);
+        AsyncOperation nextSceneOperation = SceneManager.LoadSceneAsync(name, mode);
+        while (!nextSceneOperation.isDone) {
+            loadProgress = Mathf.Clamp01(nextSceneOperation.progress / 0.9f);
             yield return null;
         }
         loadProgress = 0f;
@@ -62,6 +69,7 @@ public class GameManager : MonoBehaviour {
         deltaTime = 0f;
         while (deltaTime <= GameConfig.SCENE_FADE_DURATION) {
             sceneFadeAlpha = 1 - Mathf.Clamp01(deltaTime / GameConfig.SCENE_FADE_DURATION);
+            FindObjectOfType<AudioManager>().SetBGMVolume(originalBGMVolume * (1 - sceneFadeAlpha));
 
             if (Time.unscaledDeltaTime <= GameConfig.SCENE_LOAD_LAG_DURATION_MAX)
                 deltaTime += Time.unscaledDeltaTime;

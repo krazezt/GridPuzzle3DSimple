@@ -16,6 +16,7 @@ public class GameplayConfig {
     public const string NAME_ACCELERATE_DOWN = "AccelerateDownArea";
     public const string NAME_ELECTRIC_ARC = "ElectricArc";
     public const string NAME_FIRE_AREA = "FireArea";
+    public const string NAME_STAR = "Star";
     public const string NAME_GOAL_POINT = "GoalPoint";
 
     public enum MoveDirection {
@@ -23,5 +24,11 @@ public class GameplayConfig {
         BOTTOM,
         LEFT,
         RIGHT
+    }
+
+    public enum PlayState {
+        LOSING,
+        PLAYING,
+        WINNING
     }
 }

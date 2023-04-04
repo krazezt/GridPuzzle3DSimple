@@ -44,5 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12bf209eb5aed9a4eb560bfd0f030259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FadeOut: {fileID: 6707859120433727999, guid: cb5698d153ab22b458548e27d3bfc5ef, type: 3}
   loadProgress: 0
+  sceneFadeAlpha: 0

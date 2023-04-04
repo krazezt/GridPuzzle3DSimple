@@ -3,29 +3,25 @@ using UnityEngine;
 
 [ExecuteInEditMode]
 public class GridSystemController : MonoBehaviour {
+    public int Width;
 
-    [SerializeField]
-    private int Width;
+    public int Height;
 
-    [SerializeField]
-    private int Height;
+    public GameObject EdgeWallObject;
 
-    [SerializeField]
-    private GameObject EdgeWallObject;
+    public GameObject WallHolder;
 
-    [SerializeField]
-    private GameObject WallHolder;
-
-    [SerializeField]
-    private GameObject[] Cells;
+    public GameObject[] Cells;
 
     // Walls
-    private List<GameObject> EdgeWallPieces = new();
+    private readonly List<GameObject> EdgeWallPieces = new();
 
     private void Awake() {
+
         UpdateGridScale();
         UpdateCellsPosition();
 
+        CellController.CellDragEvent = null;
         CellController.CellDragEvent += CheckCellSwap;
     }
 
