@@ -3907,7 +3907,7 @@ Transform:
   m_GameObject: {fileID: 1324752809}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 0.12, y: 0.12, z: 0.36}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1610297744}
@@ -5346,9 +5346,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1610297743}
-  m_LocalRotation: {x: 0, y: -0.1478214, z: 0, w: -0.98901415}
-  m_LocalPosition: {x: 0, y: 0.49999827, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.3, z: 0.1}
+  m_LocalRotation: {x: 0, y: 0.7438932, z: 0, w: -0.6682986}
+  m_LocalPosition: {x: 0, y: 0.22714262, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1324752813}
@@ -5370,7 +5370,8 @@ MonoBehaviour:
   rotateSpeed: 60
   sineWaveMultiply: 0.1
   sineWaveSpeed: 4
-  centerPos: {x: 0, y: 0.4, z: 0}
+  centerPos: {x: 0, y: 0.25, z: 0}
+  collectAnimDuration: 1
 --- !u!135 &1610297746
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5382,7 +5383,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.8
+  m_Radius: 0.14
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1648432737
 GameObject:
@@ -8235,12 +8236,12 @@ PrefabInstance:
     - target: {fileID: 490840974001823233, guid: bd474030dfff6b549aa7e29f66cf173c,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.42221716
+      value: -0.9407461
       objectReference: {fileID: 0}
     - target: {fileID: 490840974001823233, guid: bd474030dfff6b549aa7e29f66cf173c,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.90649474
+      value: -0.3391118
       objectReference: {fileID: 0}
     - target: {fileID: 2853061798916541724, guid: bd474030dfff6b549aa7e29f66cf173c,
         type: 3}
@@ -9195,12 +9196,12 @@ PrefabInstance:
     - target: {fileID: 490840974001823233, guid: 87ffc4a07c5ac0848af83aa41b1f91e6,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.6368541
+      value: 0.7106836
       objectReference: {fileID: 0}
     - target: {fileID: 490840974001823233, guid: 87ffc4a07c5ac0848af83aa41b1f91e6,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.7709844
+      value: 0.7035118
       objectReference: {fileID: 0}
     - target: {fileID: 3786067599228155132, guid: 87ffc4a07c5ac0848af83aa41b1f91e6,
         type: 3}

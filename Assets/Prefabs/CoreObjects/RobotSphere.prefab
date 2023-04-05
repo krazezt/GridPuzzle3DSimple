@@ -2751,7 +2751,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RobotBody: {fileID: 1361342923083938}
   controller: {fileID: 1175516929}
-  timeManager: {fileID: 0}
+  playState: 0
   ExplosionVFX: {fileID: 4593184485820762745}
   ElectrifiedVFX: {fileID: 9027514047848138168}
   MovementSpeed: 0.02

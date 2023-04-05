@@ -51,11 +51,71 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: ce810f5c95fe0ec4da659358652a4ecd, type: 3}
     volume: 0
     pitch: 1
-    loop: 0
+    loop: 1
     audioSource: {fileID: 0}
   SFXList:
   - name: ButtonClick
     clip: {fileID: 8300000, guid: 2322633c1fbaf5e4b80b07e88c317bb7, type: 3}
+    volume: 0
+    pitch: 1
+    loop: 0
+    audioSource: {fileID: 0}
+  - name: PlayButtonClick
+    clip: {fileID: 8300000, guid: 91e5c7ec91154b54e9ef6a17d2e5d686, type: 3}
+    volume: 0
+    pitch: 1
+    loop: 0
+    audioSource: {fileID: 0}
+  - name: CellDrag
+    clip: {fileID: 8300000, guid: e05f1da1b78e809479ff850e369a9d12, type: 3}
+    volume: 0
+    pitch: 1
+    loop: 0
+    audioSource: {fileID: 0}
+  - name: CellLocked
+    clip: {fileID: 8300000, guid: 389734b04e1996047a74f5c98f79eda1, type: 3}
+    volume: 0
+    pitch: 1
+    loop: 0
+    audioSource: {fileID: 0}
+  - name: Win
+    clip: {fileID: 8300000, guid: adcaf1dccea9f6b4aa94a1fb0c61287e, type: 3}
+    volume: 0
+    pitch: 1
+    loop: 0
+    audioSource: {fileID: 0}
+  - name: Lose
+    clip: {fileID: 8300000, guid: 8bc60dd6e060e0745a8b41435839a73f, type: 3}
+    volume: 0
+    pitch: 1
+    loop: 0
+    audioSource: {fileID: 0}
+  - name: StarCollected
+    clip: {fileID: 8300000, guid: 52320e590bf774734a288886eba557ba, type: 3}
+    volume: 0
+    pitch: 1
+    loop: 0
+    audioSource: {fileID: 0}
+  - name: Explosion
+    clip: {fileID: 8300000, guid: c574bd52f5d96ed4995ba129911bc8e7, type: 3}
+    volume: 0
+    pitch: 1
+    loop: 0
+    audioSource: {fileID: 0}
+  - name: AccelerateUp
+    clip: {fileID: 8300000, guid: aea184cf4bf658e4590bce0db91db286, type: 3}
+    volume: 0
+    pitch: 1.5
+    loop: 0
+    audioSource: {fileID: 0}
+  - name: AccelerateDown
+    clip: {fileID: 8300000, guid: aea184cf4bf658e4590bce0db91db286, type: 3}
+    volume: 0
+    pitch: 0.5
+    loop: 0
+    audioSource: {fileID: 0}
+  - name: Electrified
+    clip: {fileID: 8300000, guid: 446a92013cb2aad47a37a0d201d87df5, type: 3}
     volume: 0
     pitch: 1
     loop: 0
