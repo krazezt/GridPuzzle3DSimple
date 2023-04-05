@@ -15,7 +15,7 @@
   * **<a href="https://assetstore.unity.com/packages/3d/characters/robots/robot-sphere-136226" target="_blank">Robot Sphere</a>**
   * **<a href="https://assetstore.unity.com/packages/3d/environments/sci-fi/sci-fi-pbr-props-118783" target="_blank">Sci-Fi PBR Props</a>**
 * GUI:
-
+  * **<a href="https://assetstore.unity.com/packages/essentials/ui-samples-25468" target="_blank">Robot Sphere</a>**
 * VFXs:
 
 * SFXs:
