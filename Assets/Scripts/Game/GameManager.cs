@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour {
         }
 
         AsyncOperation loadingSceneOperation = SceneManager.LoadSceneAsync(GameConfig.SCENE_NAME_LOADING);
-        while (loadingSceneOperation.isDone)
+        while (!loadingSceneOperation.isDone)
             yield return null;
 
         AsyncOperation nextSceneOperation = SceneManager.LoadSceneAsync(name, mode);
