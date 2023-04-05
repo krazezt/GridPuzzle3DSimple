@@ -17,7 +17,7 @@
 * GUI:
   * **<a href="https://assetstore.unity.com/packages/essentials/ui-samples-25468" target="_blank">UI Samples</a>**
 * VFXs:
-  * **<a href="https://assetstore.unity.com/packages/essentials/ui-samples-25468" target="_blank">Cartoon FX Remaster</a>**
+  * **<a href="https://assetstore.unity.com/packages/vfx/particles/cartoon-fx-remaster-free-109565" target="_blank">Cartoon FX Remaster</a>**
 * SFXs:
 
 
