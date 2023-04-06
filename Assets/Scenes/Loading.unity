@@ -248,6 +248,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 8189627483034632982, guid: 9d90308f668df5a4fa4c07515cc342cf,
+        type: 3}
+      propertyPath: m_Name
+      value: LoadProgressBar
+      objectReference: {fileID: 0}
     - target: {fileID: 8189627484114321724, guid: 9d90308f668df5a4fa4c07515cc342cf,
         type: 3}
       propertyPath: m_AnchorMax.x

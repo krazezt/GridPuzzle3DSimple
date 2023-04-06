@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3652eef9ecfddd498da0638d0c623e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MainMenuPanel: {fileID: 0}
-  SettingMenuPanel: {fileID: 0}
+  mainMenuPanel: {fileID: 0}
+  settingMenuPanel: {fileID: 0}
   BGMSlider: {fileID: 0}
   SFXSlider: {fileID: 0}

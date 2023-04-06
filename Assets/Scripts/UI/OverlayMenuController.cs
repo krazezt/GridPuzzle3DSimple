@@ -2,10 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class OverlayMenuController : MonoBehaviour {
-    public GameObject OverlayMenu;
-    public Image BackDropPanel;
-    public GameObject MainMenuPanel;
-    public GameObject SettingMenuPanel;
+    public GameObject overlayMenu;
+    public Image backdropPanel;
+    public GameObject mainMenuPanel;
+    public GameObject settingMenuPanel;
 
     [Header("Sound setting control")]
     public Slider BGMSlider;
@@ -13,8 +13,8 @@ public class OverlayMenuController : MonoBehaviour {
     public Slider SFXSlider;
 
     public void ToggleOverlayMenu() {
-        if (OverlayMenu != null) {
-            if (OverlayMenu.GetComponent<CanvasGroup>().alpha == 0)
+        if (overlayMenu != null) {
+            if (overlayMenu.GetComponent<CanvasGroup>().alpha == 0)
                 ShowOverlayMenu();
             else
                 CloseOverlayMenu();
@@ -22,33 +22,33 @@ public class OverlayMenuController : MonoBehaviour {
     }
 
     public void ShowOverlayMenu() {
-        if (OverlayMenu != null) {
-            BackDropPanel.raycastTarget = true;
-            ShowCanvas(OverlayMenu);
+        if (overlayMenu != null) {
+            backdropPanel.raycastTarget = true;
+            ShowCanvas(overlayMenu);
             ActiveMainMenu();
             TimeManager.instance.GetComponent<TimeManager>().StopTime();
         }
     }
 
     public void CloseOverlayMenu() {
-        if (OverlayMenu != null) {
-            BackDropPanel.raycastTarget = false;
-            HideCanvas(OverlayMenu);
+        if (overlayMenu != null) {
+            backdropPanel.raycastTarget = false;
+            HideCanvas(overlayMenu);
             TimeManager.instance.GetComponent<TimeManager>().UnstopTime();
         }
     }
 
     public void ActiveMainMenu() {
-        HideCanvas(SettingMenuPanel);
-        ShowCanvas(MainMenuPanel);
+        HideCanvas(settingMenuPanel);
+        ShowCanvas(mainMenuPanel);
     }
 
     public void ActiveSettingMenu() {
         BGMSlider.value = FindObjectOfType<AudioManager>().BGMVolume;
         SFXSlider.value = FindObjectOfType<AudioManager>().SFXVolume;
 
-        HideCanvas(MainMenuPanel);
-        ShowCanvas(SettingMenuPanel);
+        HideCanvas(mainMenuPanel);
+        ShowCanvas(settingMenuPanel);
     }
 
     public void QuitGame() {

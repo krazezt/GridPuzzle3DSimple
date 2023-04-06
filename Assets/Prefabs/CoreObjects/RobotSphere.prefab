@@ -2749,11 +2749,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1da4e10117f81624b95410e43fa1eb39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RobotBody: {fileID: 1361342923083938}
+  robotBody: {fileID: 1361342923083938}
   controller: {fileID: 1175516929}
-  playState: 0
   ExplosionVFX: {fileID: 4593184485820762745}
   ElectrifiedVFX: {fileID: 9027514047848138168}
+  playState: 0
   MovementSpeed: 0.02
   MSMultiplyOnRolling: 5
   MSMultiplyOnStartRolling: 0.5

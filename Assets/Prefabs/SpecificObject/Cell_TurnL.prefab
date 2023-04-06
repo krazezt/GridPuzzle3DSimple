@@ -369,8 +369,6 @@ MonoBehaviour:
   - {fileID: 9001278960510909731}
   - {fileID: 1324680012831532884}
   - {fileID: 1370536832388699779}
-  timeManager: {fileID: 5389687342665428818, guid: 7dc8d354fbb15b447b36bcd4f9bdb381,
-    type: 3}
   blockUpperSideQuad: {fileID: 1409494521723432187}
   isLocked: 0
   onDragging: 0
@@ -686,7 +684,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4768665562673698, guid: 0d5a00a980021114ebdb7d74a8417881, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.41120106
+      value: -0.09539601
       objectReference: {fileID: 0}
     - target: {fileID: 4768665562673698, guid: 0d5a00a980021114ebdb7d74a8417881, type: 3}
       propertyPath: m_LocalRotation.x
@@ -694,7 +692,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4768665562673698, guid: 0d5a00a980021114ebdb7d74a8417881, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.9115447
+      value: 0.99543947
       objectReference: {fileID: 0}
     - target: {fileID: 4768665562673698, guid: 0d5a00a980021114ebdb7d74a8417881, type: 3}
       propertyPath: m_LocalRotation.z
@@ -715,6 +713,11 @@ PrefabInstance:
     - target: {fileID: 513457828203066557, guid: 0d5a00a980021114ebdb7d74a8417881,
         type: 3}
       propertyPath: TurnScale
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 513457828203066557, guid: 0d5a00a980021114ebdb7d74a8417881,
+        type: 3}
+      propertyPath: turnScale
       value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

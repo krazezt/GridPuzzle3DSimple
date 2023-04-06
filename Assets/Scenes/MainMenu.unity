@@ -3356,12 +3356,12 @@ PrefabInstance:
       objectReference: {fileID: 1433906781}
     - target: {fileID: 4090591954825128880, guid: 69bc2d96ea9ff334ba5b9352d2facccd,
         type: 3}
-      propertyPath: MainMenuPanel
+      propertyPath: mainMenuPanel
       value: 
       objectReference: {fileID: 628842262}
     - target: {fileID: 4090591954825128880, guid: 69bc2d96ea9ff334ba5b9352d2facccd,
         type: 3}
-      propertyPath: SettingMenuPanel
+      propertyPath: settingMenuPanel
       value: 
       objectReference: {fileID: 1090068003}
     - target: {fileID: 5894118819066941170, guid: 69bc2d96ea9ff334ba5b9352d2facccd,

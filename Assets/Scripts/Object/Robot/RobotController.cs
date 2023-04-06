@@ -2,11 +2,7 @@
 using UnityEngine;
 
 public class RobotController : MonoBehaviour {
-    private Animator RobotAnimator;
-
-    // Consts
     private readonly Vector3 DIR_TOP = new(0, 0, 1);
-
     private readonly Vector3 DIR_BOTTOM = new(0, 0, -1);
     private readonly Vector3 DIR_RIGHT = new(1, 0, 0);
     private readonly Vector3 DIR_LEFT = new(-1, 0, 0);
@@ -19,8 +15,9 @@ public class RobotController : MonoBehaviour {
     // States
     private bool isPlaying = false;
 
-    private GameplayConfig.MoveDirection CurrentMoveDirection;
-    private Vector3 CurrentRotation;
+    private Animator robotAnimator;
+    private GameplayConfig.MoveDirection currentMoveDirection;
+    private Vector3 currentRotation;
 
     private float wallCollideDeltaTime = 0f;
 
@@ -35,16 +32,13 @@ public class RobotController : MonoBehaviour {
     private bool onStartRolling;
     private bool onStopRolling;
 
-    // Variables
-    public GameObject RobotBody;
-
+    public GameObject robotBody;
     public CharacterController controller;
+    public ParticleSystem ExplosionVFX;
+    public ParticleSystem ElectrifiedVFX;
 
     [HideInInspector]
     public GameplayConfig.PlayState playState;
-
-    public ParticleSystem ExplosionVFX;
-    public ParticleSystem ElectrifiedVFX;
 
     [SerializeField]
     private float MovementSpeed = 0.02f;
@@ -58,15 +52,15 @@ public class RobotController : MonoBehaviour {
     [SerializeField]
     private float MSMultiplyOnStopRolling = 0.0f;
 
-    private Vector3 CurrentDir;
+    private Vector3 currentDir;
     private Vector3 tmpMoveVector;
     private bool isStarCollected;
 
     private void Awake() {
-        RobotAnimator = gameObject.GetComponent<Animator>();
-        CurrentRotation = transform.eulerAngles;
-        CurrentDir = DIR_RIGHT;
-        CurrentMoveDirection = GameplayConfig.MoveDirection.RIGHT;
+        robotAnimator = gameObject.GetComponent<Animator>();
+        currentRotation = transform.eulerAngles;
+        currentDir = DIR_RIGHT;
+        currentMoveDirection = GameplayConfig.MoveDirection.RIGHT;
         playState = GameplayConfig.PlayState.PLAYING;
         onRotating = false;
         onRolling = false;
@@ -77,7 +71,7 @@ public class RobotController : MonoBehaviour {
         onStarting = true;
         isPlaying = false;
 
-        gameObject.transform.eulerAngles = CurrentRotation;
+        gameObject.transform.eulerAngles = currentRotation;
     }
 
     // Update is called once per frame
@@ -87,7 +81,7 @@ public class RobotController : MonoBehaviour {
         platformRotateDeltaTime += Time.deltaTime;
 
         // Process
-        transform.eulerAngles = CurrentRotation;
+        transform.eulerAngles = currentRotation;
         switch (isPlaying) {
             case true:  // Game is on Playing
                 if (!onRotating)
@@ -96,8 +90,8 @@ public class RobotController : MonoBehaviour {
                 break;
 
             case false: // Game is on Starting or Ending
-                if (onStarting && !RobotAnimator.GetCurrentAnimatorStateInfo(0).IsName(AnimationConfig.ANIMATION_NAME_OPENING)) {
-                    RobotAnimator.SetBool(AnimationConfig.WALKING_ANIMATION_STATE, true);
+                if (onStarting && !robotAnimator.GetCurrentAnimatorStateInfo(0).IsName(AnimationConfig.ANIMATION_NAME_OPENING)) {
+                    robotAnimator.SetBool(AnimationConfig.WALKING_ANIMATION_STATE, true);
 
                     onStarting = false;
                     isPlaying = true;
@@ -110,7 +104,7 @@ public class RobotController : MonoBehaviour {
     private void MoveForward() {
         tmpMoveVector = Vector3.zero;
 
-        tmpMoveVector = CurrentDir * MovementSpeed;
+        tmpMoveVector = currentDir * MovementSpeed;
 
         if (onRolling)
             tmpMoveVector *= MSMultiplyOnRolling;
@@ -233,20 +227,20 @@ public class RobotController : MonoBehaviour {
                             ) {
                             if (!onRotating) {
                                 // Start rotate
-                                RobotAnimator.SetBool(AnimationConfig.WALKING_ANIMATION_STATE, false);
+                                robotAnimator.SetBool(AnimationConfig.WALKING_ANIMATION_STATE, false);
                                 transform.position = collision.gameObject.transform.position + new Vector3(0, platformYOffset, 0);
 
                                 platformRotateOffset = collision.gameObject.transform.eulerAngles.y - transform.eulerAngles.y;
                                 onRotating = true;
                             } else {
                                 // On rotate
-                                platformYAxisRotateDeltaDegree += Mathf.Abs(CurrentRotation.y - (collision.gameObject.transform.eulerAngles.y - platformRotateOffset));
+                                platformYAxisRotateDeltaDegree += Mathf.Abs(currentRotation.y - (collision.gameObject.transform.eulerAngles.y - platformRotateOffset));
 
                                 // Euler angles changed from 180 to -180 or vice versa.
                                 if (platformYAxisRotateDeltaDegree > 360f - GameplayConfig.PLATFORM_SNAP_ROTATE)
                                     platformYAxisRotateDeltaDegree -= 360f;
 
-                                CurrentRotation.y = collision.gameObject.transform.eulerAngles.y - platformRotateOffset;
+                                currentRotation.y = collision.gameObject.transform.eulerAngles.y - platformRotateOffset;
 
                                 // Stop rotate
                                 if (platformYAxisRotateDeltaDegree >= GameplayConfig.PLATFORM_ROTATE_MAX) {
@@ -254,7 +248,7 @@ public class RobotController : MonoBehaviour {
                                     platformYAxisRotateDeltaDegree = 0f;
                                     platformRotateDeltaTime = 0f;
                                     SnapRotation();
-                                    RobotAnimator.SetBool(AnimationConfig.WALKING_ANIMATION_STATE, true);
+                                    robotAnimator.SetBool(AnimationConfig.WALKING_ANIMATION_STATE, true);
                                     onRotating = false;
                                 }
                             }
@@ -272,7 +266,7 @@ public class RobotController : MonoBehaviour {
     }
 
     private void TurnBack() {
-        switch (CurrentMoveDirection) {
+        switch (currentMoveDirection) {
             case GameplayConfig.MoveDirection.TOP:
                 Rotate(GameplayConfig.MoveDirection.BOTTOM);
                 break;
@@ -292,46 +286,46 @@ public class RobotController : MonoBehaviour {
     }
 
     private void SnapRotation() {
-        // Standard the CurrentRotation vector
-        while (CurrentRotation.y >= 180 + GameplayConfig.PLATFORM_SNAP_ROTATE)
-            CurrentRotation.y -= 360;
-        while (CurrentRotation.y <= -90 - GameplayConfig.PLATFORM_SNAP_ROTATE)
-            CurrentRotation.y += 360;
+        // Standard the currentRotation vector
+        while (currentRotation.y >= 180 + GameplayConfig.PLATFORM_SNAP_ROTATE)
+            currentRotation.y -= 360;
+        while (currentRotation.y <= -90 - GameplayConfig.PLATFORM_SNAP_ROTATE)
+            currentRotation.y += 360;
 
-        if (Vector3.Distance(CurrentRotation, ROT_TOP) <= GameplayConfig.PLATFORM_SNAP_ROTATE)
+        if (Vector3.Distance(currentRotation, ROT_TOP) <= GameplayConfig.PLATFORM_SNAP_ROTATE)
             Rotate(GameplayConfig.MoveDirection.TOP);
-        else if (Vector3.Distance(CurrentRotation, ROT_BOTTOM) <= GameplayConfig.PLATFORM_SNAP_ROTATE)
+        else if (Vector3.Distance(currentRotation, ROT_BOTTOM) <= GameplayConfig.PLATFORM_SNAP_ROTATE)
             Rotate(GameplayConfig.MoveDirection.BOTTOM);
-        else if (Vector3.Distance(CurrentRotation, ROT_RIGHT) <= GameplayConfig.PLATFORM_SNAP_ROTATE)
+        else if (Vector3.Distance(currentRotation, ROT_RIGHT) <= GameplayConfig.PLATFORM_SNAP_ROTATE)
             Rotate(GameplayConfig.MoveDirection.RIGHT);
-        else if (Vector3.Distance(CurrentRotation, ROT_LEFT) <= GameplayConfig.PLATFORM_SNAP_ROTATE)
+        else if (Vector3.Distance(currentRotation, ROT_LEFT) <= GameplayConfig.PLATFORM_SNAP_ROTATE)
             Rotate(GameplayConfig.MoveDirection.LEFT);
     }
 
     private void Rotate(GameplayConfig.MoveDirection newDirection) {
         switch (newDirection) {
             case GameplayConfig.MoveDirection.TOP:
-                CurrentMoveDirection = GameplayConfig.MoveDirection.TOP;
-                CurrentDir = DIR_TOP;
-                CurrentRotation = ROT_TOP;
+                currentMoveDirection = GameplayConfig.MoveDirection.TOP;
+                currentDir = DIR_TOP;
+                currentRotation = ROT_TOP;
                 break;
 
             case GameplayConfig.MoveDirection.BOTTOM:
-                CurrentMoveDirection = GameplayConfig.MoveDirection.BOTTOM;
-                CurrentDir = DIR_BOTTOM;
-                CurrentRotation = ROT_BOTTOM;
+                currentMoveDirection = GameplayConfig.MoveDirection.BOTTOM;
+                currentDir = DIR_BOTTOM;
+                currentRotation = ROT_BOTTOM;
                 break;
 
             case GameplayConfig.MoveDirection.RIGHT:
-                CurrentMoveDirection = GameplayConfig.MoveDirection.RIGHT;
-                CurrentDir = DIR_RIGHT;
-                CurrentRotation = ROT_RIGHT;
+                currentMoveDirection = GameplayConfig.MoveDirection.RIGHT;
+                currentDir = DIR_RIGHT;
+                currentRotation = ROT_RIGHT;
                 break;
 
             case GameplayConfig.MoveDirection.LEFT:
-                CurrentMoveDirection = GameplayConfig.MoveDirection.LEFT;
-                CurrentDir = DIR_LEFT;
-                CurrentRotation = ROT_LEFT;
+                currentMoveDirection = GameplayConfig.MoveDirection.LEFT;
+                currentDir = DIR_LEFT;
+                currentRotation = ROT_LEFT;
                 break;
         }
     }
@@ -342,7 +336,7 @@ public class RobotController : MonoBehaviour {
 
     private IEnumerator StartRolling() {
         FindObjectOfType<AudioManager>().PlaySFX(AudioConfig.SFX_ACCELERATE_UP);
-        RobotAnimator.SetBool(AnimationConfig.ROLLING_ANIMATION_STATE, true);
+        robotAnimator.SetBool(AnimationConfig.ROLLING_ANIMATION_STATE, true);
         onStartRolling = true;
 
         yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_START_ROLL);
@@ -353,7 +347,7 @@ public class RobotController : MonoBehaviour {
 
     private IEnumerator StopRolling() {
         FindObjectOfType<AudioManager>().PlaySFX(AudioConfig.SFX_ACCELERATE_DOWN);
-        RobotAnimator.SetBool(AnimationConfig.ROLLING_ANIMATION_STATE, false);
+        robotAnimator.SetBool(AnimationConfig.ROLLING_ANIMATION_STATE, false);
         onRolling = false;
 
         yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_STOP_ROLL);
@@ -367,13 +361,13 @@ public class RobotController : MonoBehaviour {
 
     private IEnumerator StartDyingFire() {
         if (!onRolling) {
-            RobotAnimator.SetBool(AnimationConfig.OPENING_ANIMATION_STATE, false);
+            robotAnimator.SetBool(AnimationConfig.OPENING_ANIMATION_STATE, false);
             yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_CLOSE);
         } else
             yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_EXPLODE_FIRE);
 
         isPlaying = false;
-        RobotBody.SetActive(false);
+        robotBody.SetActive(false);
         FindObjectOfType<AudioManager>().PlaySFX(AudioConfig.SFX_EXPLOSION);
         ExplosionVFX.Play();
         if (Camera.main.TryGetComponent<CameraShake>(out var cameraShake))
@@ -384,7 +378,7 @@ public class RobotController : MonoBehaviour {
 
     private IEnumerator StartDyingElectric() {
         isPlaying = false;
-        RobotAnimator.speed = 0f;
+        robotAnimator.speed = 0f;
 
         yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_ELECTRIFIED);
         FindObjectOfType<AudioManager>().PlaySFX(AudioConfig.SFX_ELECTRIFIED);
@@ -393,7 +387,7 @@ public class RobotController : MonoBehaviour {
         yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_EXPLODE_ELECCTRIC);
         ElectrifiedVFX.Stop();
 
-        RobotBody.SetActive(false);
+        robotBody.SetActive(false);
         FindObjectOfType<AudioManager>().PlaySFX(AudioConfig.SFX_EXPLOSION);
         ExplosionVFX.Play();
         if (Camera.main.TryGetComponent<CameraShake>(out var cameraShake))
@@ -405,10 +399,10 @@ public class RobotController : MonoBehaviour {
     private IEnumerator Win() {
         isPlaying = false;
         if (onRolling) {
-            RobotAnimator.SetBool(AnimationConfig.ROLLING_ANIMATION_STATE, false);
+            robotAnimator.SetBool(AnimationConfig.ROLLING_ANIMATION_STATE, false);
             yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_STOP_ROLL);
         }
-        RobotAnimator.SetBool(AnimationConfig.WINNING_ANIMATION_STATE, true);
+        robotAnimator.SetBool(AnimationConfig.WINNING_ANIMATION_STATE, true);
 
         yield return new WaitForSeconds(AnimationConfig.ANIMATION_DELAY_WINNING);
         playState = GameplayConfig.PlayState.WINNING;

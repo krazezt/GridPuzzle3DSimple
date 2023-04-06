@@ -12,7 +12,6 @@ public class CellController : MonoBehaviour {
     [SerializeField]
     private GameObject[] RulerSides;
 
-    public TimeManager timeManager;
     public GameObject blockUpperSideQuad;   // The Quad/Plane in the Block's upper side to make player know which Cell is being locked.
     public bool isLocked;
 
@@ -62,7 +61,7 @@ public class CellController : MonoBehaviour {
         }
 
         FindObjectOfType<AudioManager>().PlaySFX(AudioConfig.SFX_CELL_DRAG);
-        timeManager.StopTime();
+        TimeManager.instance.StopTime();
         ShowRuler();
         offsetVector = transform.position - MouseWorldPositionStart();
         onDragging = true;
@@ -84,7 +83,7 @@ public class CellController : MonoBehaviour {
             return;
 
         FindObjectOfType<AudioManager>().PlaySFX(AudioConfig.SFX_CELL_DRAG);
-        timeManager.UnstopTime();
+        TimeManager.instance.UnstopTime();
         HideRuler();
         CellDragEvent();
         onDragging = false;

@@ -9,7 +9,7 @@ public class TimeManager : MonoBehaviour {
     public float slowdownLength = 2f;
     public float fixedUpdateRate = 50f;
 
-    public Material[] UsingUnscaledTimeMaterials;
+    public Material[] usingUnscaledTimeMaterials;
 
     private void Awake() {
         if (instance == null)
@@ -38,7 +38,7 @@ public class TimeManager : MonoBehaviour {
     }
 
     private void Update() {
-        foreach (Material ele in UsingUnscaledTimeMaterials) {
+        foreach (Material ele in usingUnscaledTimeMaterials) {
             ele.SetFloat(ShaderConfig.UNSCALED_TIME_REFERENCE, Time.unscaledTime);
         }
     }

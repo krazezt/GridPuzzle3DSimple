@@ -47,5 +47,5 @@ MonoBehaviour:
   slowdownFactor: 0.05
   slowdownLength: 2
   fixedUpdateRate: 60
-  UsingUnscaledTimeMaterials:
+  usingUnscaledTimeMaterials:
   - {fileID: 2100000, guid: 191211a810fef2d449c81986686d18bf, type: 2}

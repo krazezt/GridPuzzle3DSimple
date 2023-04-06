@@ -3,10 +3,10 @@ using UnityEngine.UI;
 
 public class WinAndLoseNotifyController : MonoBehaviour {
     public GameObject player;
-    public GameObject WinAndLoseNotify;
-    public Image BackDropPanel;
-    public GameObject WinPanel;
-    public GameObject LosePanel;
+    public GameObject winAndLoseNotify;
+    public Image backDropPanel;
+    public GameObject winPanel;
+    public GameObject losePanel;
 
     private RobotController robotController;
     private bool isGameEnded;
@@ -35,21 +35,21 @@ public class WinAndLoseNotifyController : MonoBehaviour {
     }
 
     public void ShowWinMenu() {
-        BackDropPanel.raycastTarget = true;
-        ShowCanvas(WinAndLoseNotify);
+        backDropPanel.raycastTarget = true;
+        ShowCanvas(winAndLoseNotify);
 
-        HideCanvas(LosePanel);
-        ShowCanvas(WinPanel);
+        HideCanvas(losePanel);
+        ShowCanvas(winPanel);
 
         isGameEnded = true;
     }
 
     public void ShowLoseMenu() {
-        BackDropPanel.raycastTarget = true;
-        ShowCanvas(WinAndLoseNotify);
+        backDropPanel.raycastTarget = true;
+        ShowCanvas(winAndLoseNotify);
 
-        HideCanvas(WinPanel);
-        ShowCanvas(LosePanel);
+        HideCanvas(winPanel);
+        ShowCanvas(losePanel);
 
         isGameEnded = true;
     }

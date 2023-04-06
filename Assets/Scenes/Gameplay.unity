@@ -517,21 +517,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2776823838433356102, guid: cb5698d153ab22b458548e27d3bfc5ef,
         type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2776823838433356102, guid: cb5698d153ab22b458548e27d3bfc5ef,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2776823838433356102, guid: cb5698d153ab22b458548e27d3bfc5ef,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2776823838433356102, guid: cb5698d153ab22b458548e27d3bfc5ef,
-        type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -594,11 +579,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SceneFade
-      objectReference: {fileID: 0}
-    - target: {fileID: 4936121081933020934, guid: cb5698d153ab22b458548e27d3bfc5ef,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cb5698d153ab22b458548e27d3bfc5ef, type: 3}
@@ -1214,6 +1194,11 @@ PrefabInstance:
       objectReference: {fileID: 718872221}
     - target: {fileID: 7959114965249726474, guid: fa95afd709b526d46bb8290215747640,
         type: 3}
+      propertyPath: overlayMenu
+      value: 
+      objectReference: {fileID: 718872221}
+    - target: {fileID: 7959114965249726474, guid: fa95afd709b526d46bb8290215747640,
+        type: 3}
       propertyPath: BackDropPanel
       value: 
       objectReference: {fileID: 846489824}
@@ -1224,7 +1209,27 @@ PrefabInstance:
       objectReference: {fileID: 1770320443}
     - target: {fileID: 7959114965249726474, guid: fa95afd709b526d46bb8290215747640,
         type: 3}
+      propertyPath: backDropPanel
+      value: 
+      objectReference: {fileID: 846489824}
+    - target: {fileID: 7959114965249726474, guid: fa95afd709b526d46bb8290215747640,
+        type: 3}
+      propertyPath: backdropPanel
+      value: 
+      objectReference: {fileID: 846489824}
+    - target: {fileID: 7959114965249726474, guid: fa95afd709b526d46bb8290215747640,
+        type: 3}
+      propertyPath: mainMenuPanel
+      value: 
+      objectReference: {fileID: 1770320443}
+    - target: {fileID: 7959114965249726474, guid: fa95afd709b526d46bb8290215747640,
+        type: 3}
       propertyPath: SettingMenuPanel
+      value: 
+      objectReference: {fileID: 119639233}
+    - target: {fileID: 7959114965249726474, guid: fa95afd709b526d46bb8290215747640,
+        type: 3}
+      propertyPath: settingMenuPanel
       value: 
       objectReference: {fileID: 119639233}
     - target: {fileID: 7959114965249726475, guid: fa95afd709b526d46bb8290215747640,
@@ -1350,15 +1355,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1610297744, guid: 4e633935327eba7419bc045af9d9b8d4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.15027173
+      value: 0.3460546
       objectReference: {fileID: 0}
     - target: {fileID: 1610297744, guid: 4e633935327eba7419bc045af9d9b8d4, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.98580873
+      value: -0.98392224
       objectReference: {fileID: 0}
     - target: {fileID: 1610297744, guid: 4e633935327eba7419bc045af9d9b8d4, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.16787282
+      value: -0.17859772
       objectReference: {fileID: 0}
     - target: {fileID: 1454259354944801648, guid: 4e633935327eba7419bc045af9d9b8d4,
         type: 3}
@@ -1423,22 +1428,22 @@ PrefabInstance:
     - target: {fileID: 1934815361877946216, guid: 4e633935327eba7419bc045af9d9b8d4,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.39442837
+      value: 0.6141121
       objectReference: {fileID: 0}
     - target: {fileID: 1934815361877946216, guid: 4e633935327eba7419bc045af9d9b8d4,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.9189267
+      value: 0.7892189
       objectReference: {fileID: 0}
     - target: {fileID: 7769090669904554314, guid: 4e633935327eba7419bc045af9d9b8d4,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.6600263
+      value: -0.6722099
       objectReference: {fileID: 0}
     - target: {fileID: 7769090669904554314, guid: 4e633935327eba7419bc045af9d9b8d4,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.7512425
+      value: 0.7403606
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4e633935327eba7419bc045af9d9b8d4, type: 3}
@@ -1603,7 +1608,17 @@ PrefabInstance:
       objectReference: {fileID: 7498807124557532716}
     - target: {fileID: 62292908093282474, guid: 8b6306421a465b946a02b8d42fc1a5d8,
         type: 3}
+      propertyPath: winPanel
+      value: 
+      objectReference: {fileID: 7498807124557532716}
+    - target: {fileID: 62292908093282474, guid: 8b6306421a465b946a02b8d42fc1a5d8,
+        type: 3}
       propertyPath: LosePanel
+      value: 
+      objectReference: {fileID: 7498807124557532715}
+    - target: {fileID: 62292908093282474, guid: 8b6306421a465b946a02b8d42fc1a5d8,
+        type: 3}
+      propertyPath: losePanel
       value: 
       objectReference: {fileID: 7498807124557532715}
     - target: {fileID: 62292908093282474, guid: 8b6306421a465b946a02b8d42fc1a5d8,
@@ -1613,7 +1628,17 @@ PrefabInstance:
       objectReference: {fileID: 7498807124557532718}
     - target: {fileID: 62292908093282474, guid: 8b6306421a465b946a02b8d42fc1a5d8,
         type: 3}
+      propertyPath: backDropPanel
+      value: 
+      objectReference: {fileID: 7498807124557532718}
+    - target: {fileID: 62292908093282474, guid: 8b6306421a465b946a02b8d42fc1a5d8,
+        type: 3}
       propertyPath: WinAndLoseNotify
+      value: 
+      objectReference: {fileID: 7498807124557532717}
+    - target: {fileID: 62292908093282474, guid: 8b6306421a465b946a02b8d42fc1a5d8,
+        type: 3}
+      propertyPath: winAndLoseNotify
       value: 
       objectReference: {fileID: 7498807124557532717}
     - target: {fileID: 5333974508655034484, guid: 8b6306421a465b946a02b8d42fc1a5d8,

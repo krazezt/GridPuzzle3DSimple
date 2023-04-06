@@ -7,14 +7,14 @@ public class GridSystemController : MonoBehaviour {
 
     public int Height;
 
-    public GameObject EdgeWallObject;
+    public GameObject edgeWallObject;
 
-    public GameObject WallHolder;
+    public GameObject wallHolder;
 
-    public GameObject[] Cells;
+    public GameObject[] gridCells;
 
     // Walls
-    private readonly List<GameObject> EdgeWallPieces = new();
+    private readonly List<GameObject> edgeWallPieces = new();
 
     private void Awake() {
 
@@ -40,8 +40,8 @@ public class GridSystemController : MonoBehaviour {
     }
 
     private void UpdateCellsPosition() {
-        for (int i = 0; i < Cells.Length; i++)
-            Cells[i].transform.localPosition = CalculateCellPosition(i);
+        for (int i = 0; i < gridCells.Length; i++)
+            gridCells[i].transform.localPosition = CalculateCellPosition(i);
     }
 
     private void UpdateGridScale() {
@@ -62,14 +62,14 @@ public class GridSystemController : MonoBehaviour {
     }
 
     private void CheckCellSwap() {
-        for (int i = 0; i < Cells.Length; i++) {
-            if (Cells[i].GetComponent<CellController>().onDragging)
-                for (int j = 0; j < Cells.Length; j++)
+        for (int i = 0; i < gridCells.Length; i++) {
+            if (gridCells[i].GetComponent<CellController>().onDragging)
+                for (int j = 0; j < gridCells.Length; j++)
                     if (
                         (i != j) &&
-                        (!Cells[i].GetComponent<CellController>().isLocked) &&
-                        (!Cells[j].GetComponent<CellController>().isLocked) &&
-                        (Vector3.Distance(Cells[i].transform.position, Cells[j].transform.position) <= GridConfig.CELL_SNAP_DISTANCE)
+                        (!gridCells[i].GetComponent<CellController>().isLocked) &&
+                        (!gridCells[j].GetComponent<CellController>().isLocked) &&
+                        (Vector3.Distance(gridCells[i].transform.position, gridCells[j].transform.position) <= GridConfig.CELL_SNAP_DISTANCE)
                         ) {
                         SwapCells(i, j);
                         UpdateCellsPosition();
@@ -81,7 +81,7 @@ public class GridSystemController : MonoBehaviour {
     }
 
     private void SwapCells(int index1, int index2) {
-        (Cells[index2], Cells[index1]) = (Cells[index1], Cells[index2]);
+        (gridCells[index2], gridCells[index1]) = (gridCells[index1], gridCells[index2]);
     }
 
     private void GenerateWalls() {
@@ -171,18 +171,18 @@ public class GridSystemController : MonoBehaviour {
     }
 
     private void GenerateWallPiece(Vector3 localPos) {
-        GameObject newWallPiece = Instantiate(EdgeWallObject);
+        GameObject newWallPiece = Instantiate(edgeWallObject);
         newWallPiece.transform.localPosition = localPos;
-        newWallPiece.transform.parent = WallHolder.transform;
+        newWallPiece.transform.parent = wallHolder.transform;
 
-        EdgeWallPieces.Add(newWallPiece);
+        edgeWallPieces.Add(newWallPiece);
     }
 
     private void ClearWallPieces() {
-        EdgeWallPieces.ForEach(delegate (GameObject piece) {
+        edgeWallPieces.ForEach(delegate (GameObject piece) {
             DestroyImmediate(piece);
         });
 
-        EdgeWallPieces.Clear();
+        edgeWallPieces.Clear();
     }
 }

@@ -3,8 +3,8 @@ using UnityEngine.UI;
 
 [ExecuteInEditMode]
 public class MainMenuController : MonoBehaviour {
-    public GameObject MainMenuPanel;
-    public GameObject SettingMenuPanel;
+    public GameObject mainMenuPanel;
+    public GameObject settingMenuPanel;
 
     [Header("Sound settings control")]
     public Slider BGMSlider;
@@ -16,16 +16,16 @@ public class MainMenuController : MonoBehaviour {
     }
 
     public void ActiveMainMenu() {
-        HideCanvas(SettingMenuPanel);
-        ShowCanvas(MainMenuPanel);
+        HideCanvas(settingMenuPanel);
+        ShowCanvas(mainMenuPanel);
     }
 
     public void ActiveSettingMenu() {
         BGMSlider.value = FindObjectOfType<AudioManager>().BGMVolume;
         SFXSlider.value = FindObjectOfType<AudioManager>().SFXVolume;
 
-        HideCanvas(MainMenuPanel);
-        ShowCanvas(SettingMenuPanel);
+        HideCanvas(mainMenuPanel);
+        ShowCanvas(settingMenuPanel);
     }
 
     public void PlayGame() {
